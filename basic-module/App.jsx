@@ -1,13 +1,29 @@
 import React, { Component } from "react";
-import { View, } from 'react-native'
+import { View, TextInput, Text } from 'react-native'
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      nome: "MAtheus"
+    }
+
+    this.pegaNome = this.pegaNome.bind(this)
+  }
+
+  pegaNome(texto){
+    if (texto.length > 0) {
+      this.setState({nome: 'Bem Vindo ' + texto})
+    } else {
+      this.setState({nome: ''})
+    }
+  }
+
   render() {
     return (
-      <View style={{flex: 1, backgroundColor: '#fff', flexDirection: 'row', alignItems: 'flex-end',justifyContent:'space-evenly'}}>
-        <View style={{ width: 50,  backgroundColor:"#222" , height: 50}}></View>
-        <View style={{ width: 50,  backgroundColor:"#1238" , height: 50}}></View>
-        <View style={{ width: 50,  backgroundColor:"#894" , height: 50}}></View>
+      <View style={{}}>
+        <TextInput style={{borderWidth: 3}} onChangeText={this.pegaNome} />
+        <Text>{this.state.nome}</Text>
       </View>
     )
   }
