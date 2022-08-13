@@ -7,29 +7,41 @@ export default class CompRn extends Component {
     this.state = {
       larAnimada: new Animated.Value(150),
       altAnimada: new Animated.Value(50),
-      opacityAnimated: new Animated.Value(0),
     };
-    Animated.sequence([
-      Animated.timing(this.state.opacityAnimated, {
-        toValue: 1,
-        duration: 1000,
-      }),
+    // Animated.sequence([
+    //   Animated.timing(this.state.opacityAnimated, {
+    //     toValue: 1,
+    //     duration: 1000,
+    //   }),
 
-      Animated.parallel([
+    //   Animated.parallel([
+    //     Animated.timing(this.state.larAnimada, {
+    //       toValue: 300,
+    //       duration: 2000,
+    //     }),
+    //     Animated.timing(this.state.altAnimada, {
+    //       toValue: 100,
+    //       duration: 2000,
+    //     }),
+    //   ]),
+    //   Animated.timing(this.state.opacityAnimated, {
+    //     toValue: 0,
+    //     duration: 2000,
+    //   }),
+    // ]).start();
+
+    Animated.loop(
+      Animated.sequence([
         Animated.timing(this.state.larAnimada, {
           toValue: 300,
-          duration: 2000,
+          duration: 700,
         }),
-        Animated.timing(this.state.altAnimada, {
+        Animated.timing(this.state.larAnimada, {
           toValue: 100,
-          duration: 2000,
+          duration: 700,
         }),
-      ]),
-      Animated.timing(this.state.opacityAnimated, {
-        toValue: 0,
-        duration: 2000,
-      }),
-    ]).start();
+      ])
+    ).start();
   }
 
   render() {
