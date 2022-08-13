@@ -7,15 +7,29 @@ export default class CompRn extends Component {
     this.state = {
       larAnimada: new Animated.Value(150),
       altAnimada: new Animated.Value(50),
+      opacityAnimated: new Animated.Value(0),
     };
-    Animated.timing(this.state.larAnimada, {
-      toValue: 300,
-      duration: 2000,
-    }).start();
-    Animated.timing(this.state.altAnimada, {
-      toValue: 100,
-      duration: 2000,
-    }).start();
+    Animated.sequence([
+      Animated.timing(this.state.opacityAnimated, {
+        toValue: 1,
+        duration: 1000,
+      }),
+
+      Animated.parallel([
+        Animated.timing(this.state.larAnimada, {
+          toValue: 300,
+          duration: 2000,
+        }),
+        Animated.timing(this.state.altAnimada, {
+          toValue: 100,
+          duration: 2000,
+        }),
+      ]),
+      Animated.timing(this.state.opacityAnimated, {
+        toValue: 0,
+        duration: 2000,
+      }),
+    ]).start();
   }
 
   render() {
@@ -27,6 +41,7 @@ export default class CompRn extends Component {
             height: this.state.altAnimada,
             backgroundColor: "#4169e1",
             justifyContent: "center",
+            opacity: this.state.opacityAnimated,
           }}
         >
           <Text
