@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Text, Animated } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Animated,
+  TouchableOpacity,
+} from "react-native";
 
 export default class CompRn extends Component {
   constructor(props) {
@@ -8,6 +14,7 @@ export default class CompRn extends Component {
       larAnimada: new Animated.Value(150),
       altAnimada: new Animated.Value(50),
     };
+    this.carregaGrafico = this.carregaGrafico.bind(this);
     // Animated.sequence([
     //   Animated.timing(this.state.opacityAnimated, {
     //     toValue: 1,
@@ -30,42 +37,82 @@ export default class CompRn extends Component {
     //   }),
     // ]).start();
 
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(this.state.larAnimada, {
-          toValue: 300,
-          duration: 700,
-        }),
-        Animated.timing(this.state.larAnimada, {
-          toValue: 100,
-          duration: 700,
-        }),
-      ])
-    ).start();
+    // Animated.loop(
+    //   Animated.sequence([
+    //     Animated.timing(this.state.larAnimada, {
+    //       toValue: 300,
+    //       duration: 700,
+    //     }),
+    //     Animated.timing(this.state.larAnimada, {
+    //       toValue: 100,
+    //       duration: 700,
+    //     }),
+    //   ])
+    // ).start();
+  }
+
+  carregaGrafico() {
+    Animated.sequence([
+      Animated.timing(this.state.altAnimada, {
+        toValue: 300,
+        duration: 700,
+      }),
+      Animated.timing(this.state.altAnimada, {
+        toValue: 100,
+      }),
+    ]).start();
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Animated.View
-          style={{
-            width: this.state.larAnimada,
-            height: this.state.altAnimada,
-            backgroundColor: "#4169e1",
+        <View
+          styles={{
+            height: 80,
+            alignItems: "center",
             justifyContent: "center",
-            opacity: this.state.opacityAnimated,
+            flexDirection: "row",
+            backgroundColor: "#4169e1",
           }}
         >
-          <Text
-            style={{
-              color: "#fff",
-              fontSize: 22,
-              textAlign: "center",
+          <View
+            styles={{
+              flex: 1,
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              alignItems: "center",
             }}
           >
-            Carregando...
-          </Text>
-        </Animated.View>
+            <TouchableOpacity onPress={this.carregaGrafico}>
+              <Text
+                style={{
+                  fontSize: 25,
+                  color: "#fff",
+                }}
+              >
+                Disparar
+              </Text>
+            </TouchableOpacity>
+            <Animated.View
+              style={{
+                width: this.state.larAnimada,
+                height: this.state.altAnimada,
+                backgroundColor: "#4169e1",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  fontSize: 22,
+                  textAlign: "center",
+                }}
+              >
+                Carregando...
+              </Text>
+            </Animated.View>
+          </View>
+        </View>
       </View>
     );
   }
