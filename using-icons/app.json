@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "using-icons",
+    "slug": "using-icons",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
