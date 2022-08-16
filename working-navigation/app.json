@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "working-navigation",
+    "slug": "working-navigation",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
