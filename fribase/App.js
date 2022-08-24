@@ -9,80 +9,55 @@ import {
   ActivityIndicator,
 } from "react-native";
 import db from "./src/config/connection";
-import Lista from "./src/components/lista";
-console.disableYellowBox = true;
 
 export default function App(props) {
-  const [nome, setNome] = useState("");
-  const [cargo, setCargo] = useState("");
-  const [usuarios, setUsuarios] = useState([]);
-  const [loadings, setLoadings] = useState(true);
-
-  useEffect(() => {
-    async function dados() {
-      setUsuarios([]);
-      await db
-        .database()
-        .ref("usuarios")
-        .on("value", (snapshot) => {
-          snapshot.forEach((chilItem) => {
-            let data = {
-              key: chilItem.key,
-              nome: chilItem.val().nome,
-              cargo: chilItem.val().cargo,
-            };
-
-            setUsuarios((oldArray) => [...oldArray, data]);
-          });
-          setLoadings(false);
-        });
-    }
-    dados();
-  }, []);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   async function Cadastrar() {
-    if ((nome !== "") & (cargo !== "")) {
-      let usuarios = await db.database().ref("usuarios");
-      let chave = usuarios.push().key;
-      usuarios.child(chave).set({
-        nome: nome,
-        cargo: cargo,
+    await db
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((value) => {
+        alert("User created" + value.user.email);
+      })
+      .catch((error) => {
+        if (error.code === "auth/weak-password") {
+          alert("Sua Senha Deve Ter Pelo Menos 6 Caracteres");
+          return;
+        }
+        if (error.code === "auth/invalid-email") {
+          alert("Email Invalido");
+          return;
+        } else {
+          alert("ops Algo Deu Errado");
+          return;
+        }
       });
-
-      alert("Cadastrado com sucessos");
-      setCargo("");
-      setNome("");
-    }
+    setEmail("");
+    setPassword("");
   }
+
   return (
     <View style={styles.container}>
-      <Text style={{ fontSize: 25 }}>Digite Um Nome</Text>
+      <Text style={{ fontSize: 25 }}>CADASTRO</Text>
       <TextInput
-        value={nome}
-        placeholder="Digite Um Nome"
+        value={email}
+        placeholder="Digite Um Email"
         onChangeText={(texto) => {
-          setNome(texto);
+          setEmail(texto);
         }}
       />
       <TextInput
-        value={cargo}
-        placeholder="Digite Um Nome"
+        value={password}
+        placeholder="Digite Uma Senha"
         onChangeText={(texto) => {
-          setCargo(texto);
+          setPassword(texto);
         }}
       />
       <TouchableOpacity onPress={Cadastrar}>
-        <Text>Salvar</Text>
+        <Text>Cadastrar</Text>
       </TouchableOpacity>
-      {loadings ? (
-        <ActivityIndicator size={48} color="red" />
-      ) : (
-        <FlatList
-          keyExtractor={(item) => item.key}
-          data={usuarios}
-          renderItem={({ item }) => <Lista data={item} />}
-        />
-      )}
     </View>
   );
 }
