@@ -13,29 +13,52 @@ import db from "./src/config/connection";
 export default function App(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [user, setUser] = useState("");
 
-  async function Cadastrar() {
+  // async function Cadastrar() {
+  //   await db
+  //     .auth()
+  //     .createUserWithEmailAndPassword(email, password)
+  //     .then((value) => {
+  //       alert("User created" + value.user.email);
+  //     })
+  //     .catch((error) => {
+  //       if (error.code === "auth/weak-password") {
+  //         alert("Sua Senha Deve Ter Pelo Menos 6 Caracteres");
+  //         return;
+  //       }
+  //       if (error.code === "auth/invalid-email") {
+  //         alert("Email Invalido");
+  //         return;
+  //       } else {
+  //         alert("ops Algo Deu Errado");
+  //         return;
+  //       }
+  //     });
+  //   setEmail("");
+  //   setPassword("");
+  // }
+
+  async function login() {
     await db
       .auth()
-      .createUserWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword(email, password)
       .then((value) => {
-        alert("User created" + value.user.email);
+        alert("Bem Vindo:  " + value.user.email);
+        setUser(value.user.email);
       })
       .catch((error) => {
-        if (error.code === "auth/weak-password") {
-          alert("Sua Senha Deve Ter Pelo Menos 6 Caracteres");
-          return;
-        }
-        if (error.code === "auth/invalid-email") {
-          alert("Email Invalido");
-          return;
-        } else {
-          alert("ops Algo Deu Errado");
-          return;
-        }
+        alert("ops Algo Deu Errado");
       });
+
     setEmail("");
     setPassword("");
+  }
+
+  async function logout() {
+    await db.auth().signOut();
+    setUser("");
+    alert("Deslogado");
   }
 
   return (
@@ -55,9 +78,17 @@ export default function App(props) {
           setPassword(texto);
         }}
       />
-      <TouchableOpacity onPress={Cadastrar}>
-        <Text>Cadastrar</Text>
+      <TouchableOpacity onPress={login}>
+        <Text>Acessar</Text>
       </TouchableOpacity>
+      <Text>{user}</Text>
+      {user.length > 0 ? (
+        <TouchableOpacity onPress={logout}>
+          <Text>Sair </Text>
+        </TouchableOpacity>
+      ) : (
+        <Text>Nenhum Usuario Cadastrado</Text>
+      )}
     </View>
   );
 }
