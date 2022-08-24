@@ -5,27 +5,37 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
 } from "react-native";
 import db from "./src/config/connection";
-
+import Lista from "./src/components/lista";
 console.disableYellowBox = true;
 
 export default function App(props) {
   const [nome, setNome] = useState("");
   const [cargo, setCargo] = useState("");
+  const [usuarios, setUsuarios] = useState([]);
+  const [loadings, setLoadings] = useState(true);
 
   useEffect(() => {
     async function dados() {
-      // await db.database().ref("tipo").set("cliente");
-      // await db.database().ref("outroTipp").set("vendedor");
-      // await db.database().ref("outroTipp").remove();
-      // await db.database().ref("usuarios").child(3).set({
-      //   nome: "RYannnn",
-      //   idade: "18",
-      // });
-      // await db.database().ref("usuarios").child(3).update({
-      //   nome: "RV",
-      // });
+      setUsuarios([]);
+      await db
+        .database()
+        .ref("usuarios")
+        .on("value", (snapshot) => {
+          snapshot.forEach((chilItem) => {
+            let data = {
+              key: chilItem.key,
+              nome: chilItem.val().nome,
+              cargo: chilItem.val().cargo,
+            };
+
+            setUsuarios((oldArray) => [...oldArray, data]);
+          });
+          setLoadings(false);
+        });
     }
     dados();
   }, []);
@@ -64,6 +74,15 @@ export default function App(props) {
       <TouchableOpacity onPress={Cadastrar}>
         <Text>Salvar</Text>
       </TouchableOpacity>
+      {loadings ? (
+        <ActivityIndicator size={48} color="red" />
+      ) : (
+        <FlatList
+          keyExtractor={(item) => item.key}
+          data={usuarios}
+          renderItem={({ item }) => <Lista data={item} />}
+        />
+      )}
     </View>
   );
 }
