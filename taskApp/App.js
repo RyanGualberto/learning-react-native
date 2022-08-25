@@ -19,6 +19,14 @@ let tasks = [
 export default function App(props) {
   const [user, setUser] = useState(null);
   const [newTask, setNewTask] = useState('');
+
+  function handleDelete(key) {
+    console.log(key);
+  }
+  function handleEdit(key) {
+    console.log(key);
+  }
+
   if (!user) {
     return <Login changeStatus={user => setUser(user)} />;
     2;
@@ -38,7 +46,13 @@ export default function App(props) {
       </View>
       <FlatList
         data={tasks}
-        renderItem={({item}) => <TaskList data={item} />}
+        renderItem={({item}) => (
+          <TaskList
+            data={item}
+            deleteItem={handleDelete}
+            editItem={handleEdit}
+          />
+        )}
         keyExtractor={item => item.key}
       />
     </SafeAreaView>
