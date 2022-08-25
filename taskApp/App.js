@@ -12,6 +12,7 @@ import {
 import Login from './src/components/Login';
 import TaskList from './src/components/TaskList';
 import conn from './src/config/firebase';
+import Feather from 'react-native-vector-icons/Feather';
 
 export default function App(props) {
   const [user, setUser] = useState(null);
@@ -105,12 +106,30 @@ export default function App(props) {
       });
   }
 
+  function cancelEdit() {
+    setKey('');
+    setNewTask('');
+    Keyboard.dismiss();
+  }
+
   if (!user) {
     return <Login changeStatus={user => setUser(user)} />;
     2;
   }
   return (
     <SafeAreaView style={styles.container}>
+      {key.length > 0 ? (
+        <View style={{flexDirection: 'row', marginBottom: 8}}>
+          <TouchableOpacity onPress={cancelEdit}>
+            <Feather name="x-circle" size={20} color="#ff0000" />
+          </TouchableOpacity>
+          <Text style={{marginLeft: 5, color: '#ff0000'}}>
+            Você Está Editando Uma Tarefa
+          </Text>
+        </View>
+      ) : (
+        ''
+      )}
       <View style={styles.containerTask}>
         <TextInput
           style={styles.input}
