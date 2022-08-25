@@ -5,7 +5,8 @@ import Login from './src/components/Login';
 export default function App(props) {
   const [user, setUser] = useState(null);
   if (!user) {
-    return <Login />;
+    return <Login changeStatus={user => setUser(user)} />;
+    2;
   }
   return (
     <SafeAreaView style={styles.container}>

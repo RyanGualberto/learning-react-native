@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import conn from '../../config/firebase';
 
-export default function Login(props) {
+export default function Login({changeStatus}) {
   const [type, setType] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,7 +21,7 @@ export default function Login(props) {
         .auth()
         .signInWithEmailAndPassword(email, password)
         .then(user => {
-          console.log(user);
+          changeStatus(user.user.uid);
         })
         .catch(err => {
           console.log(err);
@@ -33,7 +33,7 @@ export default function Login(props) {
         .auth()
         .createUserWithEmailAndPassword(email, password)
         .then(user => {
-          console.log(user);
+          changeStatus(user.user.uid);
         })
         .catch(err => {
           console.log(err);
