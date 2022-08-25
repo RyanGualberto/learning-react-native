@@ -7,24 +7,44 @@ import {
   SafeAreaView,
   Text,
   FlatList,
+  Keyboard,
 } from 'react-native';
 import Login from './src/components/Login';
 import TaskList from './src/components/TaskList';
-let tasks = [
-  {key: '1', nome: 'Comprar Guarana'},
-  {key: '2', nome: 'Comprar Guarana'},
-  {key: '3', nome: 'Comprar Guarana'},
-];
+import conn from './src/config/firebase';
 
 export default function App(props) {
   const [user, setUser] = useState(null);
   const [newTask, setNewTask] = useState('');
-
+  const [tasks, setTasks] = useState([]);
   function handleDelete(key) {
     console.log(key);
   }
   function handleEdit(key) {
     console.log(key);
+  }
+
+  function handleAdd() {
+    if (newTask === '') {
+      return;
+    }
+    let tarefas = conn.database().ref('tarefas').child(user);
+    let chave = tarefas.push().key;
+    tarefas
+      .child(chave)
+      .set({
+        nome: newTask,
+      })
+      .then(() => {
+        const data = {
+          key: chave,
+          nome: newTask,
+        };
+
+        setTasks(oldTasks => [...oldTasks, data]);
+        setNewTask('');
+        Keyboard.dismiss();
+      });
   }
 
   if (!user) {
@@ -40,7 +60,7 @@ export default function App(props) {
           value={newTask}
           onChangeText={text => setNewTask(text)}
         />
-        <TouchableOpacity style={styles.buttonAdd}>
+        <TouchableOpacity style={styles.buttonAdd} onPress={handleAdd}>
           <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
       </View>
