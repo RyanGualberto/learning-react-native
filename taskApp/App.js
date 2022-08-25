@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   StyleSheet,
@@ -17,17 +17,75 @@ export default function App(props) {
   const [user, setUser] = useState(null);
   const [newTask, setNewTask] = useState('');
   const [tasks, setTasks] = useState([]);
+  const [key, setKey] = useState('');
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    function getUser() {
+      if (!user) {
+        return;
+      }
+      conn
+        .database()
+        .ref('tarefas')
+        .child(user)
+        .once('value', snapshot => {
+          snapshot?.forEach(childItem => {
+            let data = {
+              key: childItem.key,
+              nome: childItem.val().nome,
+            };
+            setTasks(oldTasks => [...oldTasks, data]);
+          });
+        });
+    }
+    getUser();
+  }, [user]);
+
   function handleDelete(key) {
-    console.log(key);
+    conn
+      .database()
+      .ref('tarefas')
+      .child(user)
+      .child(key)
+      .remove()
+      .then(() => {
+        const findTasks = tasks.filter(item => item.key !== key);
+        setTasks(findTasks);
+      });
   }
-  function handleEdit(key) {
-    console.log(key);
+  function handleEdit(data) {
+    setKey(data.key);
+    setNewTask(data.nome);
+    inputRef.current.focus();
   }
 
   function handleAdd() {
     if (newTask === '') {
       return;
     }
+
+    if (key !== '') {
+      conn
+        .database()
+        .ref('tarefas')
+        .child(user)
+        .child(key)
+        .update({
+          nome: newTask,
+        })
+        .then(() => {
+          const taskIndex = tasks.findIndex(item => item.key === key);
+          let taskClone = tasks;
+          taskClone[taskIndex].nome = newTask;
+          setTasks([...taskClone]);
+        });
+      Keyboard.dismiss();
+      setNewTask('');
+      setKey('');
+      return;
+    }
+
     let tarefas = conn.database().ref('tarefas').child(user);
     let chave = tarefas.push().key;
     tarefas
@@ -59,6 +117,7 @@ export default function App(props) {
           placeholder="O que vai fazer hoje?"
           value={newTask}
           onChangeText={text => setNewTask(text)}
+          ref={inputRef}
         />
         <TouchableOpacity style={styles.buttonAdd} onPress={handleAdd}>
           <Text style={styles.buttonText}>+</Text>
