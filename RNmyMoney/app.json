@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "RNmyMoney",
+    "slug": "RNmyMoney",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
